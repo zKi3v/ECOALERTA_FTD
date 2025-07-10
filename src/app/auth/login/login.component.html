@@ -1,0 +1,72 @@
+<div class="auth-container">
+  <div class="eco-nav-bar">
+    <div class="eco-nav-actions">
+      <button mat-raised-button color="primary" routerLink="/">INICIO</button>
+    </div>
+  </div>
+
+  <mat-card class="auth-card">
+    <div class="card-header">
+      <h1>INICIO DE SESIÓN</h1>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Correo</mat-label>
+        <input matInput type="email" formControlName="email" required>
+        @if (loginForm.get('email')?.hasError('required')) {
+          <mat-error>
+            El correo es requerido
+          </mat-error>
+        }
+        @if (loginForm.get('email')?.hasError('email')) {
+          <mat-error>
+            Por favor ingrese un correo válido
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        @if (loginForm.get('password')?.hasError('required')) {
+          <mat-error>
+            La contraseña es requerida
+          </mat-error>
+        }
+        @if (loginForm.get('password')?.hasError('minlength')) {
+          <mat-error>
+            La contraseña debe tener al menos 6 caracteres
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-checkbox formControlName="rememberMe" class="remember-me">
+        Recordarme
+      </mat-checkbox>
+
+      <button mat-raised-button color="primary" type="submit" class="submit-button" [disabled]="!loginForm.valid">
+        INGRESAR
+      </button>
+    </form>
+
+    <div class="auth-links">
+      <button mat-button type="button" (click)="goToRegister()" class="register-link" style="cursor: pointer; pointer-events: auto;">
+        ¿No tienes cuenta? Regístrate aquí
+      </button>
+      <button mat-button type="button" (click)="showForgotPassword()" class="forgot-password-link">
+        ¿Olvidaste tu contraseña?
+      </button>
+    </div>
+  </mat-card>
+
+  <footer class="eco-footer">
+    <div class="footer-content">
+      <span class="copyright">EcoAlerta © 2025</span>
+      <span class="slogan">Cuidando nuestro mundo, un reporte a la vez</span>
+    </div>
+  </footer>
+</div>

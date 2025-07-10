@@ -1,0 +1,134 @@
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <button mat-icon-button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      <span style="margin-left: 8px; font-weight: 600;">VOLVER</span>
+    </button>
+    <div class="logo">🍃 ECOALERTA</div>
+    <div></div> <!-- Spacer -->
+  </div>
+
+  <!-- Title -->
+  <h1 class="title">REALIZA TU REPORTE</h1>
+
+  <main class="main-content">
+    <form [formGroup]="reportForm" class="form-grid">
+      <!-- Columna Izquierda -->
+      <div class="form-col left-col">
+        <mat-form-field appearance="outline" class="distrito-field">
+          <mat-label>Distrito</mat-label>
+          <input matInput formControlName="distrito" readonly>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="direccion-field">
+          <mat-label>Dirección</mat-label>
+          <textarea matInput formControlName="direccion" required [matAutocomplete]="auto" placeholder="Busca o selecciona una dirección" rows="3" class="direccion-textarea"></textarea>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSuggestionSelected($event)" class="address-autocomplete">
+            <mat-option *ngFor="let suggestion of addressSuggestions" [value]="suggestion" class="address-option">
+              <div class="address-option-content">
+                <span class="address-main">{{ suggestion.display_name }}</span>
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="referencia-field">
+          <mat-label>Referencia</mat-label>
+          <textarea matInput formControlName="referencia" required rows="3" class="referencia-textarea"></textarea>
+        </mat-form-field>
+      </div>
+
+      <!-- Columna Central (Mapa) -->
+      <div class="map-col">
+        <div id="minimap" class="minimap-container"></div>
+        <!-- Mensaje de advertencia -->
+        <div *ngIf="showLocationWarning" class="location-warning">
+          <mat-icon>warning</mat-icon>
+          <span>El servicio solo está disponible para La Esperanza</span>
+        </div>
+      </div>
+
+      <!-- Columna Derecha -->
+      <div class="form-col right-col">
+        <mat-form-field appearance="outline" class="motivo-field">
+          <mat-label>Motivo*</mat-label>
+          <input matInput formControlName="titulo" placeholder="Describe brevemente el motivo">
+          @if (reportForm.get('titulo')?.hasError('required')) {
+          <mat-error>El motivo es requerido</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="descripcion-field">
+          <mat-label>Descripción*</mat-label>
+          <textarea matInput formControlName="descripcion" rows="5" placeholder="Describe detalladamente"></textarea>
+          @if (reportForm.get('descripcion')?.hasError('required')) {
+          <mat-error>La descripción es requerida</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Categoría</mat-label>
+          <mat-select formControlName="categoriaId" required>
+            <mat-option *ngFor="let cat of categorias; trackBy: trackByIdCategoria" [value]="cat.idCategoria">
+              {{ cat.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+      <!-- Botones de Imagen -->
+      <div class="image-buttons">
+        <button mat-stroked-button type="button" (click)="triggerImageUpload()" class="image-button">
+          <mat-icon>add_photo_alternate</mat-icon>
+          ADJUNTAR IMAGEN
+        </button>
+        <input type="file" #fileInput hidden accept=".jpg,.jpeg,.png,.webp" (change)="onImageSelected($event)">
+        
+        <button mat-stroked-button type="button" (click)="takePhoto()" class="image-button"
+          [disabled]="!cameraSupported || takingPhoto">
+          <mat-icon>photo_camera</mat-icon>
+          TOMAR FOTO
+        </button>
+        
+        <!-- Mensajes de error de cámara -->
+        <div *ngIf="cameraErrorMessage" class="camera-error-message">
+          <mat-icon color="warn">error</mat-icon>
+          <span>{{ cameraErrorMessage }}</span>
+        </div>
+      </div>
+
+      <!-- Vista previa de imagen seleccionada/tomada o mensaje si no hay imagen -->
+      <div class="image-preview-area">
+        <div *ngIf="selectedImagePreview; else noImageBlock" class="image-preview-container">
+          <img [src]="selectedImagePreview" alt="Imagen seleccionada" class="image-preview" />
+          <button mat-icon-button color="warn" class="remove-image-btn" (click)="removeImage($event)" aria-label="Eliminar imagen">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <ng-template #noImageBlock>
+          <div class="no-image-message">
+            <mat-icon>image_not_supported</mat-icon>
+            <span>No hay imagen seleccionada</span>
+          </div>
+        </ng-template>
+      </div>
+      
+      <!-- Sección de Reporte -->
+      <div class="report-section">
+        <p class="disclaimer">TODO REPORTE QUE INCUMPLA NUESTRAS <span class="normas-link" (click)="irANormas()">NORMAS</span>, SERA RECHAZADO</p>
+        <button mat-raised-button color="primary" [disabled]="!reportForm.valid || !locationVerified" (click)="submitReport()" class="report-button">
+          REPORTAR
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer class="eco-footer">
+    <div class="footer-content">
+      <span class="copyright">EcoAlerta © 2025</span>
+      <span class="slogan">Cuidando nuestro mundo, un reporte a la vez</span>
+    </div>
+  </footer>
+</div>

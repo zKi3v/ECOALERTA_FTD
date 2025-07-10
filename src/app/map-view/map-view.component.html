@@ -1,0 +1,38 @@
+<div class="map-view-container">
+  <div class="map-controls">
+    <button id="btn-volver" mat-icon-button class="control-button" (click)="goBack()" matTooltip="Volver">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <button id="btn-centrar" mat-icon-button class="control-button" (click)="centerOnLaEsperanza()" matTooltip="Centrar en La Esperanza">
+      <mat-icon>center_focus_strong</mat-icon>
+    </button>
+
+    <button id="btn-seleccionar" mat-icon-button class="control-button" [class.active]="selectingLocation" (click)="toggleLocationSelect()" matTooltip="Seleccionar ubicación">
+      <mat-icon>place</mat-icon>
+    </button>
+  </div>
+  
+  <!-- Popup para incentivar reportes -->
+  <div class="report-popup-overlay" [class.show]="showReportPopup" (click)="closePopup()">
+    <div class="report-popup" (click)="$event.stopPropagation()">
+      <button class="popup-close" mat-icon-button (click)="closePopup()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <div class="popup-content">
+        <mat-icon class="popup-icon">report_problem</mat-icon>
+        <h2>¡Ayuda a mejorar tu comunidad!</h2>
+        <p>¿Viste algún problema ambiental en La Esperanza? Tu reporte puede hacer la diferencia.</p>
+        <div class="popup-actions">
+          <button mat-raised-button color="primary" (click)="goToCreateReport()">
+            <mat-icon>add_circle</mat-icon>
+            CREAR REPORTE
+          </button>
+          <button mat-button (click)="closePopup()">Ahora no</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="fullmap"></div>
+</div>

@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="header">
+    <button mat-icon-button class="back-button" (click)="router.navigate(['/home'])">
+      <mat-icon>home</mat-icon><span class="nav-label">INICIO</span>
+    </button>
+    <div class="logo">🍃 ECOALERTA</div>
+    <button mat-icon-button class="create-button" (click)="crearNuevoReporte()">
+      <mat-icon>add</mat-icon><span class="nav-label">CREAR</span>
+    </button>
+  </div>
+  <h1 class="title">REPORTES AMBIENTALES</h1>
+  <main class="main-content">
+    <div class="search-container">
+      <mat-form-field class="search-field" appearance="outline">
+        <mat-label>Buscar reportes</mat-label>
+        <input matInput [(ngModel)]="searchTerm" (input)="onSearchChange()" placeholder="Ingresa palabras clave...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div *ngIf="isLoading" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando reportes...</p>
+    </div>
+    <div *ngIf="!isLoading" class="reports-grid">
+      <div *ngIf="filteredReports.length === 0" class="no-reports">
+        <mat-icon>report_off</mat-icon>
+        <h3>No se encontraron reportes</h3>
+        <p>{{searchTerm ? 'Intenta con otros términos de búsqueda' : 'Aún no hay reportes disponibles'}}</p>
+        <button mat-raised-button color="primary" (click)="crearNuevoReporte()">
+          <mat-icon>add</mat-icon>
+          Crear primer reporte
+        </button>
+      </div>
+      <mat-card *ngFor="let report of filteredReports; trackBy: trackByReportId" class="report-card">
+        <div class="report-header">
+          <div class="report-info">
+            <h3 class="report-title">{{report.titulo}}</h3>
+            <div class="report-meta">
+              <span class="report-id">ID: {{report.idReporte}}</span>
+            </div>
+            <div class="report-location">
+              <mat-icon>location_on</mat-icon>
+              <span>Lat: {{report.latitud.toFixed(4)}}, Lng: {{report.longitud.toFixed(4)}}</span>
+            </div>
+          </div>
+          <div class="report-actions">
+            <button mat-stroked-button color="primary" (click)="viewReport(report.idReporte)">
+              <mat-icon>visibility</mat-icon>
+              <span class="details-label">Ver detalles</span>
+            </button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,257 @@
+<div class="admin-container">
+  <!-- Header -->
+  <div class="admin-header">
+    <button mat-icon-button class="back-button" (click)="volverAlHome()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Volver al Inicio</span>
+    </button>
+    
+    <div class="admin-title">
+      <mat-icon>admin_panel_settings</mat-icon>
+      <h1>Panel de Administración</h1>
+    </div>
+    
+    <div></div> <!-- Spacer for flexbox -->
+  </div>
+
+  <!-- Dashboard Cards -->
+  <div class="dashboard-cards">
+    <mat-card class="stat-card pending">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon>pending</mat-icon>
+          <div class="stat-info">
+            <h3>{{ estadisticas.pendientes }}</h3>
+            <p>Reportes Pendientes</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card approved">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon>check_circle</mat-icon>
+          <div class="stat-info">
+            <h3>{{ estadisticas.aprobados }}</h3>
+            <p>Reportes Aprobados</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card rejected">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon>cancel</mat-icon>
+          <div class="stat-info">
+            <h3>{{ estadisticas.rechazados }}</h3>
+            <p>Reportes Rechazados</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card total">
+      <mat-card-content>
+        <div class="stat-content">
+          <mat-icon>assessment</mat-icon>
+          <div class="stat-info">
+            <h3>{{ estadisticas.total }}</h3>
+            <p>Total de Reportes</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Reports Section with Tabs -->
+  <mat-card class="reports-section">
+    <mat-tab-group>
+      <!-- Pending Reports Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>pending</mat-icon>
+          Pendientes
+          <span class="tab-badge" *ngIf="reportesPendientes.length > 0">
+            ({{ reportesPendientes.length }})
+          </span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <div *ngIf="cargando" class="loading-container">
+            <mat-spinner></mat-spinner>
+            <p>Cargando reportes pendientes...</p>
+          </div>
+          
+          <div *ngIf="!cargando && reportesPendientes.length === 0" class="empty-state">
+            <mat-icon>inbox</mat-icon>
+            <h3>No hay reportes pendientes</h3>
+            <p>Todos los reportes han sido revisados</p>
+          </div>
+          
+          <div *ngIf="!cargando && reportesPendientes.length > 0" class="reports-grid">
+            <mat-card *ngFor="let reporte of reportesPendientes" class="report-card pending-card">
+              <mat-card-header>
+                <mat-card-title>{{ reporte.titulo }}</mat-card-title>
+                <span class="status-chip pending">Pendiente</span>
+              </mat-card-header>
+              
+              <mat-card-content>
+                <p><mat-icon>location_on</mat-icon>{{ reporte.ubicacion }}</p>
+                <p><mat-icon>category</mat-icon>{{ reporte.categoria }}</p>
+                <p><mat-icon>calendar_today</mat-icon>{{ reporte.fechaCreacion | date:'short' }}</p>
+                <p><mat-icon>person</mat-icon>{{ reporte.nombreUsuario || 'Usuario Anónimo' }}</p>
+              </mat-card-content>
+              
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="verDetalles(reporte.id)">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalles
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Approved Reports Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>check_circle</mat-icon>
+          Aprobados
+          <span class="tab-badge" *ngIf="reportesAprobados.length > 0">
+            ({{ reportesAprobados.length }})
+          </span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <div *ngIf="cargando" class="loading-container">
+            <mat-spinner></mat-spinner>
+            <p>Cargando reportes aprobados...</p>
+          </div>
+          
+          <div *ngIf="!cargando && reportesAprobados.length === 0" class="empty-state">
+            <mat-icon>check_circle_outline</mat-icon>
+            <h3>No hay reportes aprobados</h3>
+            <p>Aún no se han aprobado reportes</p>
+          </div>
+          
+          <div *ngIf="!cargando && reportesAprobados.length > 0" class="reports-grid">
+            <mat-card *ngFor="let reporte of reportesAprobados" class="report-card approved-card">
+              <mat-card-header>
+                <mat-card-title>{{ reporte.titulo }}</mat-card-title>
+                <span class="status-chip approved">Aprobado</span>
+              </mat-card-header>
+              
+              <mat-card-content>
+                <p><mat-icon>location_on</mat-icon>{{ reporte.ubicacion }}</p>
+                <p><mat-icon>category</mat-icon>{{ reporte.categoria }}</p>
+                <p><mat-icon>calendar_today</mat-icon>{{ reporte.fechaCreacion | date:'short' }}</p>
+                <p><mat-icon>person</mat-icon>{{ reporte.nombreUsuario || 'Usuario Anónimo' }}</p>
+              </mat-card-content>
+              
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="verDetalles(reporte.id)">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalles
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Rejected Reports Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>cancel</mat-icon>
+          Rechazados
+          <span class="tab-badge" *ngIf="reportesRechazados.length > 0">
+            ({{ reportesRechazados.length }})
+          </span>
+        </ng-template>
+        
+        <div class="tab-content">
+          <div *ngIf="cargando" class="loading-container">
+            <mat-spinner></mat-spinner>
+            <p>Cargando reportes rechazados...</p>
+          </div>
+          
+          <div *ngIf="!cargando && reportesRechazados.length === 0" class="empty-state">
+            <mat-icon>cancel</mat-icon>
+            <h3>No hay reportes rechazados</h3>
+            <p>No se han rechazado reportes</p>
+          </div>
+          
+          <div *ngIf="!cargando && reportesRechazados.length > 0" class="reports-grid">
+            <mat-card *ngFor="let reporte of reportesRechazados" class="report-card rejected-card">
+              <mat-card-header>
+                <mat-card-title>{{ reporte.titulo }}</mat-card-title>
+                <span class="status-chip rejected">Rechazado</span>
+              </mat-card-header>
+              
+              <mat-card-content>
+                <p><mat-icon>location_on</mat-icon>{{ reporte.ubicacion }}</p>
+                <p><mat-icon>category</mat-icon>{{ reporte.categoria }}</p>
+                <p><mat-icon>calendar_today</mat-icon>{{ reporte.fechaCreacion | date:'short' }}</p>
+                <p><mat-icon>person</mat-icon>{{ reporte.nombreUsuario || 'Usuario Anónimo' }}</p>
+              </mat-card-content>
+              
+              <mat-card-actions>
+                <button mat-raised-button color="primary" (click)="verDetalles(reporte.id)">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalles
+                </button>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+
+  <!-- Quick Actions -->
+  <mat-card class="quick-actions">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>flash_on</mat-icon>
+        Acciones Rápidas
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="actions-grid">
+        <button mat-raised-button color="primary" (click)="irAReportes()">
+          <mat-icon>list</mat-icon>
+          Ver Todos los Reportes
+        </button>
+        
+        <button mat-raised-button color="accent" (click)="exportarReportes()">
+          <mat-icon>download</mat-icon>
+          Exportar Reportes
+        </button>
+        
+        <button mat-raised-button (click)="gestionarCategorias()">
+          <mat-icon>category</mat-icon>
+          Gestionar Categorías
+        </button>
+        
+        <button mat-raised-button (click)="gestionarUsuarios()">
+          <mat-icon>people</mat-icon>
+          Gestionar Usuarios
+        </button>
+        
+        <button mat-raised-button (click)="verEstadisticas()">
+          <mat-icon>analytics</mat-icon>
+          Ver Estadísticas
+        </button>
+        
+        <button mat-raised-button (click)="configurarSistema()">
+          <mat-icon>settings</mat-icon>
+          Configuración
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,114 @@
+<div class="auth-container">
+  <div class="eco-nav-bar">
+    <div class="eco-nav-actions">
+      <button mat-raised-button color="primary" routerLink="/">INICIO</button>
+    </div>
+  </div>
+
+  <mat-card class="auth-card">
+    <div class="card-header">
+      <h1>REGÍSTRATE</h1>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="form-container">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" required>
+        @if (registerForm.get('nombre')?.hasError('required')) {
+          <mat-error>El nombre es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apellido</mat-label>
+        <input matInput formControlName="apellido" required>
+        @if (registerForm.get('apellido')?.hasError('required')) {
+          <mat-error>El apellido es requerido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Correo</mat-label>
+        <input matInput type="email" formControlName="correo" required>
+        @if (registerForm.get('correo')?.hasError('required')) {
+          <mat-error>El correo es requerido</mat-error>
+        }
+        @if (registerForm.get('correo')?.hasError('email')) {
+          <mat-error>Correo inválido</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Contraseña</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="contrasena" required>
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (registerForm.get('contrasena')?.hasError('required')) {
+          <mat-error>La contraseña es requerida</mat-error>
+        }
+        @if (registerForm.get('contrasena')?.hasError('minlength')) {
+          <mat-error>Debe tener al menos 6 caracteres</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input matInput type="tel" formControlName="telefono" required>
+        @if (registerForm.get('telefono')?.hasError('required')) {
+          <mat-error>El teléfono es requerido</mat-error>
+        }
+        @if (registerForm.get('telefono')?.hasError('pattern')) {
+          <mat-error>Debe tener 9 dígitos</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Dirección</mat-label>
+        <input matInput formControlName="direccion" required>
+        @if (registerForm.get('direccion')?.hasError('required')) {
+          <mat-error>La dirección es requerida</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Distrito</mat-label>
+        <mat-select formControlName="idUbigeo">
+          <mat-option [value]="1">La Esperanza</mat-option>
+          <mat-option [value]="2">Trujillo</mat-option>
+          <mat-option [value]="3">El Porvenir</mat-option>
+          <mat-option [value]="4">Florencia de Mora</mat-option>
+          <mat-option [value]="5">Huanchaco</mat-option>
+          <mat-option [value]="6">Laredo</mat-option>
+          <mat-option [value]="7">Moche</mat-option>
+          <mat-option [value]="8">Poroto</mat-option>
+          <mat-option [value]="9">Salaverry</mat-option>
+          <mat-option [value]="10">Simbal</mat-option>
+          <mat-option [value]="11">Víctor Larco Herrera</mat-option>
+        </mat-select>
+        @if (registerForm.get('idUbigeo')?.hasError('required')) {
+          <mat-error>Seleccione un distrito</mat-error>
+        }
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" class="submit-button" [disabled]="!registerForm.valid">
+        REGISTRARSE
+      </button>
+
+      <div class="login-link">
+        <button mat-button type="button" (click)="goToLogin()">
+          ¿Ya tienes cuenta? Inicia sesión aquí
+        </button>
+      </div>
+
+    </form>
+  </mat-card>
+
+  <footer class="eco-footer">
+    <div class="footer-content">
+      <span>EcoAlerta © 2025</span>
+      <span>Cuidando nuestro mundo, un reporte a la vez</span>
+    </div>
+  </footer>
+</div>

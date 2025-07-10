@@ -1,0 +1,167 @@
+<div class="eco-root">
+  <div class="eco-header-section">
+    <img src="logo.png" alt="Logo EcoAlerta" class="header-logo" />    <div class="eco-nav-actions">
+  <button mat-raised-button color="primary" routerLink="/">INICIO</button>
+
+  @if (estaLogueado) {
+    <!-- Menú del usuario con nombre clickeable -->
+    <button mat-raised-button color="accent" [matMenuTriggerFor]="userMenu">
+      <mat-icon>person</mat-icon>
+      {{ nombreUsuario }}
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <div class="user-menu-container">
+        <div class="user-info">
+          <mat-icon class="user-avatar">account_circle</mat-icon>
+          <div class="user-details">
+            <span class="user-name">{{ nombreUsuario }}</span>
+            <span class="user-role">{{ isAdmin ? 'Administrador' : 'Cliente' }}</span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="irAPerfil()">
+          <mat-icon>person</mat-icon>
+          <span>Ver Perfil</span>
+        </button>
+        <button mat-menu-item (click)="irAReportes()">
+          <mat-icon>assignment</mat-icon>
+          <span>Ver Reportes</span>
+        </button>
+        @if (isAdmin) {
+          <button mat-menu-item (click)="irAAdminPanel()">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <span>Panel de Admin</span>
+          </button>
+        }
+      </div>
+    </mat-menu>
+
+    <!-- Notificaciones -->
+    <button mat-icon-button [matMenuTriggerFor]="notificationsMenu" aria-label="Notificaciones">
+      <mat-icon>notifications</mat-icon>
+      <span *ngIf="unreadNotificationsCount > 0" class="notification-badge">{{ unreadNotificationsCount }}</span>
+    </button>
+    <mat-menu #notificationsMenu="matMenu">
+      <div class="notifications-container">
+        <div class="notifications-header">
+          <span>Notificaciones</span>
+          <div class="notifications-actions">
+            <button mat-button (click)="markAllAsRead()" *ngIf="unreadNotificationsCount > 0">
+              Marcar todas como leídas
+            </button>
+            <button mat-icon-button (click)="markAllAsRead()">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="notifications-list">
+          @for (notification of notifications; track notification.id) {
+            <div class="notification-item" [class.read]="notification.leido">
+              <div class="notification-content">
+                <h3>{{ notification.titulo }}</h3>
+                <p>{{ notification.mensaje }}</p>
+                <span class="notification-date">{{ getTimeAgo(notification.fecha) }}</span>
+              </div>
+              <button mat-icon-button (click)="markAsRead(notification.id)" *ngIf="!notification.leido">
+                <mat-icon>check</mat-icon>
+              </button>
+            </div>
+          }
+          @if (notifications.length === 0) {
+            <div class="no-notifications">
+              <p>No hay notificaciones</p>
+            </div>
+          }
+        </div>
+      </div>
+    </mat-menu>
+
+    <!-- Botón de cerrar sesión -->
+    <button mat-raised-button color="warn" (click)="cerrarSesion()">
+      <mat-icon>logout</mat-icon>
+      CERRAR SESIÓN
+    </button>
+  } @else {
+    <button mat-raised-button color="accent" (click)="goToLogin()">
+      <mat-icon>login</mat-icon>
+      INGRESO
+    </button>
+    <button mat-raised-button color="primary" routerLink="/register">
+      <mat-icon>person_add</mat-icon>
+      REGISTRO
+    </button>
+  }
+</div>
+  </div>
+
+  <div class="eco-main-content">    <div class="eco-slogan-block">      <h1 class="main-slogan">Por un mundo más limpio, un reporte a la vez</h1>
+      <p class="sub-slogan">Juntos construimos una ciudad más sostenible</p>      <button mat-raised-button color="secundary" class="cta-button" (click)="goToReport()">
+        <mat-icon>add_circle</mat-icon>
+        HACER MI REPORTE
+      </button>
+    </div>    <div class="eco-map-block">
+      <div id="map" class="leaflet-container"></div>
+      <button mat-raised-button color="primary" class="map-expand-button" (click)="goToMapView()">
+        <mat-icon>fullscreen</mat-icon>
+        VER MAPA COMPLETO
+      </button>
+    </div>
+
+    <div class="eco-info-section">
+      <mat-card class="eco-reports">
+  <div class="eco-reports-title">REPORTES RECIENTES</div>
+
+  @if (loading) {
+    <p>Cargando reportes...</p>
+  } @else {
+    @if (reportes.length > 0) {
+      <ul>
+        @for (reporte of reportes; track reporte.idReporte) {
+          <li>{{ reporte.titulo }}</li>
+        }
+      </ul>
+    } @else {
+      <p>No hay reportes disponibles.</p>
+    }
+  }
+
+  @if (errorMsg) {
+    <p class="error">{{ errorMsg }}</p>
+  }
+</mat-card>      <mat-card class="objectives-section">
+        <h2>Objetivos y Logros</h2>
+        <div class="objectives-grid">
+          <div class="objective-card">
+            <mat-icon class="objective-icon">map</mat-icon>
+            <div class="objective-title">Mapeo Inteligente</div>
+            <div class="objective-content">
+              Localización precisa de puntos de acumulación de residuos para una gestión eficiente.
+            </div>
+          </div>
+          
+          <div class="objective-card">
+            <mat-icon class="objective-icon">group</mat-icon>
+            <div class="objective-title">Participación Ciudadana</div>
+            <div class="objective-content">
+              Empoderar a la comunidad para reportar y dar seguimiento a la gestión de residuos.
+            </div>
+          </div>
+          
+          <div class="objective-card">
+            <mat-icon class="objective-icon">eco</mat-icon>
+            <div class="objective-title">Impacto Ambiental</div>
+            <div class="objective-content">
+              Reducir la contaminación y mejorar la calidad de vida en nuestra ciudad.
+            </div>
+          </div>
+        </div>
+      </mat-card>    </div>
+  </div>
+  <footer class="eco-footer">
+    <div class="footer-content">
+      <span class="copyright">EcoAlerta © 2025</span>
+      <span class="slogan">Cuidando nuestro mundo, un reporte a la vez</span>
+    </div>
+  </footer>
+</div>
